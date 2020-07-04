@@ -1,0 +1,4 @@
+#ifndef MATLIB_MATRIX_HPP
+#define MATLIB_MATRIX_HPP
+
+#endif //MATLIB_MATRIX_HPP
