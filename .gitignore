@@ -127,3 +127,5 @@ gen
 *.out
 *.app
 
+# Temporary test files
+main.cpp
