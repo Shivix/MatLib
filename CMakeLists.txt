@@ -8,6 +8,6 @@ set(INCLUDES
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
-add_executable(Genetic_Neural_Network ${INCLUDES} main.cpp)
+add_executable(MatLib ${INCLUDES} main.cpp)
 
-#add_library(Genetic_Neural_Network INTERFACE)
+#add_library(MatLib INTERFACE ${INCLUDES})
