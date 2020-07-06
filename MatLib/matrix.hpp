@@ -16,6 +16,11 @@ namespace MatLib{
         T getDeterminant(){
             return 0;
         }
+        void swap(matrix& other){
+            for(size_t i = 0; i < m_data.size(); ++i){
+                m_data[i].swap(other.m_data[i]);
+            }
+        }
         
         matrix operator + (const matrix& other) noexcept { 
             matrix<T, rows, cols> resultMatrix = {};
@@ -53,7 +58,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator * (const matrix&) noexcept {
+        matrix operator * (const matrix&) noexcept { //array swap may help
             
         }
         matrix operator / (const matrix&) noexcept {
@@ -116,14 +121,11 @@ namespace MatLib{
         const T* cend() const noexcept {
             return static_cast<const T*>(&m_data[rows][cols]);
         }
-        T rbegin() noexcept {
-            return std::reverse_iterator(end());
+        std::reverse_iterator<T*> rbegin() noexcept {
+            return std::reverse_iterator<T*>(end());
         }
-        T rend() noexcept {
-            return std::reverse_iterator(begin());
-        }
-        void swap(const matrix& matrix1, const matrix& matrix2){
-            
+        std::reverse_iterator<T*> rend() noexcept {
+            return std::reverse_iterator<T*>(begin());
         }
     };
 }
