@@ -17,17 +17,41 @@ namespace MatLib{
             return 0;
         }
         
-        friend matrix operator + (const matrix& matrix1, const matrix& matrix2) noexcept { // static_assert for size
-            for(auto&& i: matrix1){
-                int i2;
-                for(auto&& j: i){
-                    i + matrix2[i2];
-                    ++i2;
+        matrix operator + (const matrix& other) noexcept { 
+            matrix<T, rows, cols> resultMatrix = {};
+            for(std::size_t i = 0; i < m_data.size(); ++i){
+                for(std::size_t j = 0; j < m_data[0].size(); ++j){ // m_data[x] will all have same .size()
+                    resultMatrix[i][j] = this->m_data[i][j] + other.m_data[i][j];
                 }
             }
+            return resultMatrix;
         }
-        matrix operator - (const matrix&) noexcept {
-            
+        matrix operator + (const T& other) noexcept {
+            matrix<T, rows, cols> resultMatrix = {};
+            for(std::size_t i = 0; i < m_data.size(); ++i){
+                for(std::size_t j = 0; j < m_data[0].size(); ++j){ // m_data[x] will all have same .size()
+                    resultMatrix[i][j] = this->m_data[i][j] + other;
+                }
+            }
+            return resultMatrix;
+        }
+        matrix operator - (const matrix& other) noexcept {
+            matrix<T, rows, cols> resultMatrix = {};
+            for(std::size_t i = 0; i < m_data.size(); ++i){
+                for(std::size_t j = 0; j < m_data[0].size(); ++j){ // m_data[x] will all have same .size()
+                    resultMatrix[i][j] = this->m_data[i][j] - other.m_data[i][j];
+                }
+            }
+            return resultMatrix;
+        }
+        matrix operator - (const T& other) noexcept {
+            matrix<T, rows, cols> resultMatrix = {};
+            for(std::size_t i = 0; i < m_data.size(); ++i){
+                for(std::size_t j = 0; j < m_data[0].size(); ++j){ // m_data[x] will all have same .size()
+                    resultMatrix[i][j] = this->m_data[i][j] - other;
+                }
+            }
+            return resultMatrix;
         }
         matrix operator * (const matrix&) noexcept {
             
@@ -75,28 +99,28 @@ namespace MatLib{
             return iter;
         }
         T back() noexcept {
-            
+            return *end();
         }
         T front() noexcept {
-            
+            return *begin();
         }
         T* begin() noexcept {
             return static_cast<T*>(&m_data[0][0]);
         }
-        const T* begin() const noexcept {
+        const T* cbegin() const noexcept {
             return static_cast<const T*>(&m_data[0][0]);
         }
         T* end() noexcept {
             return static_cast<T*>(&m_data[rows][cols]);
         }
-        const T* end() const noexcept {
+        const T* cend() const noexcept {
             return static_cast<const T*>(&m_data[rows][cols]);
         }
         T rbegin() noexcept {
-            
+            return std::reverse_iterator(end());
         }
         T rend() noexcept {
-            
+            return std::reverse_iterator(begin());
         }
         void swap(const matrix& matrix1, const matrix& matrix2){
             
