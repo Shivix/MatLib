@@ -8,6 +8,4 @@ set(INCLUDES
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
-add_executable(MatLib ${INCLUDES} main.cpp)
-
-#add_library(MatLib INTERFACE ${INCLUDES})
+add_library(MatLib INTERFACE)
