@@ -5,6 +5,7 @@
 #include <array>
 #include <cmath>
 
+// TODO: range based for loop cuts of last element.
 namespace MatLib{
     template<typename T, std::size_t cols, std::size_t rows>
     class matrix{
@@ -19,26 +20,63 @@ namespace MatLib{
         
         T getDeterminant(){
             static_assert(rows == cols, "Must be a square matrix");
-            T determinant = 0;
+            T determinant = 1;
             if(rows == 1){
                 return m_data[0][0];
             }
             else if(rows == 2){
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
-            else if(rows == 3){
-                return get3x3Determinant(0, 0);
-            }
             else{
-                // TODO: add recursion top solve for matrices of all sizes
+                auto tempMatrix = this->getRowEchelon();
+                for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
+                    determinant = determinant * tempMatrix[i][i];
+                }
             }
             return determinant;
+        }
+        matrix getRowEchelon(){
+            auto newData = m_data;
+            
+            bool isInverted = false;
+
+            for(std::size_t pivotRow = 0; (rows < cols ? pivotRow < rows - 1 : pivotRow < cols - 1); ++pivotRow){
+                if(newData[pivotRow][pivotRow] == 0){ 
+
+                // swap pivot element with another non 0 element
+                    std::size_t swapRow = pivotRow;
+                    for(std::size_t i = pivotRow + 1; i < rows; i++){
+                        if(newData[i][pivotRow] != 0){
+                            swapRow = i;
+                            break;
+                        }
+                    }
+                    if(swapRow == pivotRow){
+                        continue;
+                    }
+                    isInverted = !isInverted;
+                    // swaps the swapRow and pivotRow
+                    newData[swapRow].swap(newData[pivotRow]);
+                }
+                // eliminate elements in x col under x col
+                for(std::size_t targetRow = pivotRow + 1; targetRow < rows; ++targetRow){
+                    T scale = newData[targetRow][pivotRow] / newData[pivotRow][pivotRow];
+                    
+                    for(std::size_t targetCol = 0; targetCol < cols; ++targetCol){
+                        newData[targetRow][targetCol] -= scale * newData[pivotRow][targetCol];
+                    }
+                }
+            }
+            //return isInverted;
+            matrix tempMatrix = {};
+            tempMatrix.m_data = newData;
+            return tempMatrix;
         }
         std::size_t size() const noexcept{
             return rows * cols;
         }
         void swap(matrix& other){
-            for(size_t i = 0; i < m_data.size(); ++i){
+            for(std::size_t i = 0; i < m_data.size(); ++i){
                 m_data[i].swap(other.m_data[i]);
             }
         }
@@ -111,7 +149,7 @@ namespace MatLib{
         std::array<T, cols> operator [] (const std::size_t& index) noexcept { // static_assert for boundaries
             return m_data[index];
         }
-        std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
+        constexpr std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
         bool operator == (const matrix& other) noexcept {
@@ -155,13 +193,13 @@ namespace MatLib{
             return static_cast<const T*>(&m_data[0][0]);
         }
         T* end() noexcept {
-            return &m_data[rows][cols];
+            return &m_data[rows - 1][cols - 1];
         }
         const T* end() const noexcept {
-            return &m_data[rows][cols];
+            return &m_data[rows - 1][cols - 1];
         }
         const T* cend() const noexcept {
-            return static_cast<const T*>(&m_data[rows][cols]);
+            return static_cast<const T*>(&m_data[rows - 1][cols - 1]);
         }
         std::reverse_iterator<T*> rbegin() noexcept {
             return std::reverse_iterator<T*>(end());
@@ -170,11 +208,7 @@ namespace MatLib{
             return std::reverse_iterator<T*>(begin());
         }
     private:
-        T get3x3Determinant(std::size_t row, std::size_t col){
-            return (m_data[row][col] * ((m_data[row + 1][col + 1] * m_data[row + 2][col + 2]) - (m_data[row + 1][col + 2] * m_data[row + 2][col + 1])))
-                 - (m_data[row][col + 1] * ((m_data[row + 1][col] * m_data[row + 2][col + 2]) - (m_data[row + 1][col + 2] * m_data[row + 2][col])))
-                 + (m_data[row][col + 2] * ((m_data[row + 1][col] * m_data[row + 2][col + 1]) - (m_data[row + 1][col + 1] * m_data[row + 2][col])));
-        }
+        
     };
 }
 
