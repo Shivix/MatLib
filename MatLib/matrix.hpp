@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <array>
 #include <cmath>
+#include <tuple>
 
 // TODO: range based for loop cuts of last element.
 namespace MatLib{
@@ -28,14 +29,14 @@ namespace MatLib{
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
             else{
-                auto tempMatrix = this->getRowEchelon();
+                auto [tempMatrix, getSign] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
-                    determinant = determinant * tempMatrix[i][i];
+                    determinant *= tempMatrix[i][i];
                 }
             }
             return determinant;
         }
-        matrix getRowEchelon(){
+        std::tuple<matrix, bool> getRowEchelon(){
             auto newData = m_data;
             
             bool isInverted = false;
@@ -70,7 +71,8 @@ namespace MatLib{
             //return isInverted;
             matrix tempMatrix = {};
             tempMatrix.m_data = newData;
-            return tempMatrix;
+
+            return std::make_tuple(tempMatrix, isInverted);
         }
         std::size_t size() const noexcept{
             return rows * cols;
