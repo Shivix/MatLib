@@ -29,17 +29,22 @@ namespace MatLib{
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
             else{
-                auto [tempMatrix, getSign] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
+                auto [tempMatrix, isNegative] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
-                    determinant *= tempMatrix[i][i];
+                    if(isNegative){
+                        determinant *= -tempMatrix[i][i];
+                    }
+                    else{
+                        determinant *= tempMatrix[i][i];
+                    }
                 }
             }
             return determinant;
         }
-        std::tuple<matrix, bool> getRowEchelon(){
+        std::tuple<matrix, bool> getRowEchelon(){ // returns the row echelon form matrix so that the original is kept
             auto newData = m_data;
             
-            bool isInverted = false;
+            bool isInverted = false; // keeps track of the sign of the determinant (before multiplication)
 
             for(std::size_t pivotRow = 0; (rows < cols ? pivotRow < rows - 1 : pivotRow < cols - 1); ++pivotRow){
                 if(newData[pivotRow][pivotRow] == 0){ 
@@ -72,7 +77,7 @@ namespace MatLib{
             matrix tempMatrix = {};
             tempMatrix.m_data = newData;
 
-            return std::make_tuple(tempMatrix, isInverted);
+            return std::make_tuple(tempMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign determinant
         }
         std::size_t size() const noexcept{
             return rows * cols;
@@ -153,14 +158,6 @@ namespace MatLib{
         }
         constexpr std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
-        }
-        bool operator == (const matrix& other) noexcept {
-            for(std::size_t i = 0; i < this->size() / cols; ++i){
-                if(this[i] == other[i]){
-                    return true;
-                }
-            }
-            return false;
         }
         friend bool operator == (const matrix matrix1, const matrix matrix2) noexcept {
             for(std::size_t i = 0; i < matrix1.size() / cols; ++i){
