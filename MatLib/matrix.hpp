@@ -3,7 +3,6 @@
 
 #include <cstddef>
 #include <array>
-#include <cmath>
 #include <tuple>
 
 // TODO: range based for loop cuts of last element.
@@ -79,7 +78,7 @@ namespace MatLib{
 
             return std::make_tuple(tempMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign determinant
         }
-        std::size_t size() const noexcept{
+        constexpr std::size_t size() const noexcept{
             return rows * cols;
         }
         void swap(matrix& other){
