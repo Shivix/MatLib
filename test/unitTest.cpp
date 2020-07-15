@@ -20,7 +20,14 @@ BOOST_AUTO_TEST_CASE(multiply_test)
                               {42, 54, 66},
                               {69, 90, 111}
             }}};
+    auto resultMatrix2 = matrix1 * 5;
+    MatLib::matrix<float, 3, 3> expectedMatrix2 = {
+            {{{0, 5, 10},
+                     {15, 20, 25},
+                     {30, 35, 40}
+             }}};
     BOOST_TEST(resultMatrix == expectedMatrix);
+    BOOST_TEST(resultMatrix2 == expectedMatrix2);
 }
 
 BOOST_AUTO_TEST_CASE(addition_test)
@@ -96,6 +103,12 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
                      {4, 9, 10, 11},
                      {12, 77, 14, 14}
              }}};
+    MatLib::matrix<int, 4, 4> matrix4x4i = {
+            {{{5, 8, 2, 3},
+                     {4, 5, 12, 7},
+                     {4, 9, 10, 11},
+                     {12, 77, 14, 14}
+             }}};
     MatLib::matrix<double, 5, 5> matrix5x5 = {
             {{{5, 35, 2, 3, 39.4},
                      {12.004, 15, 12, 7, 31},
@@ -106,6 +119,7 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
     BOOST_TEST(matrix2x2.getDeterminant() == -3);
     BOOST_TEST(matrix3x3.getDeterminant() == 0);
     BOOST_TEST(matrix4x4.getDeterminant() == 14466);
+    BOOST_TEST(matrix4x4i.getDeterminant() == 14466);
     BOOST_TEST(matrix5x5.getDeterminant() == 5182129.02628431);
 }
 
