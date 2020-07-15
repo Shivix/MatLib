@@ -28,13 +28,13 @@ namespace MatLib{
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
             else{
-                auto [tempMatrix, isNegative] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
+                auto [rowEchelonFormMatrix, isNegative] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
                     if(isNegative){
-                        determinant *= -tempMatrix[i][i];
+                        determinant *= -rowEchelonFormMatrix[i][i];
                     }
                     else{
-                        determinant *= tempMatrix[i][i];
+                        determinant *= rowEchelonFormMatrix[i][i];
                     }
                 }
             }
@@ -91,7 +91,7 @@ namespace MatLib{
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
-                    resultMatrix[i][j] = this->m_data[i][j] + other.m_data[i][j];
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] + other.m_data[i][j];
                 }
             }
             return resultMatrix;
@@ -100,7 +100,7 @@ namespace MatLib{
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
-                    resultMatrix[i][j] = this->m_data[i][j] + scalar;
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] + scalar;
                 }
             }
             return resultMatrix;
@@ -109,7 +109,7 @@ namespace MatLib{
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
-                    resultMatrix[i][j] = this->m_data[i][j] - other.m_data[i][j];
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] - other.m_data[i][j];
                 }
             }
             return resultMatrix;
@@ -118,7 +118,7 @@ namespace MatLib{
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
-                    resultMatrix[i][j] = this->m_data[i][j] - scalar;
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] - scalar;
                 }
             }
             return resultMatrix;
@@ -126,19 +126,23 @@ namespace MatLib{
         template<std::size_t otherRows, std::size_t otherCols>
         matrix operator * (const matrix<T, otherCols, otherRows>& other) noexcept { 
             matrix<T, cols, otherRows> resultMatrix = {};
-            for(size_t i = 0; i < rows; ++i){
+            for(size_t i = 0; i < otherRows; ++i){
                 for(size_t j = 0; j < cols; ++j){
-                    resultMatrix.m_data[i][j] = m_data[i][j] * other.m_data[j][i];
+                    for(size_t k = 0; k < rows; ++k){
+                        resultMatrix.m_data[i][j] += this->m_data[i][k] * other.m_data[k][j];
+                    }
                 }
             }
             return resultMatrix;
         }
         matrix operator * (const T& scalar) noexcept {
+            matrix<T, cols, rows> resultMatrix = {};
             for(size_t i = 0; i < rows; ++i){
                 for(size_t j = 0; j < cols; ++j){
-                    m_data[i][j] * scalar;
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] * scalar;
                 }
             }
+            return resultMatrix;
         }
         matrix operator / (const matrix& other) noexcept {
             
@@ -148,7 +152,7 @@ namespace MatLib{
         matrix operator / (const T& scalar) noexcept {
             for(size_t i = 0; i < rows; ++i){
                 for(size_t j = 0; j < cols; ++j){
-                    m_data[i][j] * scalar;
+                    this->m_data[i][j] * scalar;
                 }
             }
         }
