@@ -14,20 +14,49 @@ BOOST_AUTO_TEST_CASE(multiply_test)
                               {3, 4, 5},
                               {6, 7, 8}
              }}};
-    auto resultMatrix = matrix1 * matrix2;
     MatLib::matrix<float, 3, 3> expectedMatrix = {
             {{{15, 18, 21},
                               {42, 54, 66},
                               {69, 90, 111}
             }}};
-    auto resultMatrix2 = matrix1 * 5;
     MatLib::matrix<float, 3, 3> expectedMatrix2 = {
             {{{0, 5, 10},
                      {15, 20, 25},
                      {30, 35, 40}
              }}};
-    BOOST_TEST(resultMatrix == expectedMatrix);
-    BOOST_TEST(resultMatrix2 == expectedMatrix2);
+    BOOST_TEST((matrix1 * matrix2) == expectedMatrix);
+    BOOST_TEST((matrix1 * 5) == expectedMatrix2);
+}
+
+BOOST_AUTO_TEST_CASE(divide_test, *boost::unit_test::tolerance(0.01))
+{
+    MatLib::matrix<float, 3, 3> matrix1 = {
+            {{{10, 11, 12},
+                     {13, 14, 15},
+                     {16, 17, 18}
+             }}};
+    MatLib::matrix<float, 3, 3> matrix2 = {
+            {{{7, 6, 7},
+                     {3, 7, 5},
+                     {14, 15, 16}
+             }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix = {
+            {{{-1.2, -0.4, 1.4},
+                     {-0.3, -0.1, 1.1},
+                     {0.6, 0.2, 0.8}
+             }}};
+    MatLib::matrix<float, 3, 3> matrix3 = {
+                    {{{10, 15, 20},
+                             {5, 6, 8},
+                             {14, 7, 88}
+                     }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix2 = {
+            {{{2, 3, 4},
+                     {1, 1.2, 1.6},
+                     {2.8, 1.4, 17.6}
+             }}};
+    BOOST_TEST((matrix1 / matrix2) == expectedMatrix);
+    BOOST_TEST((matrix3 / 5) == expectedMatrix2);
 }
 
 BOOST_AUTO_TEST_CASE(addition_test)
@@ -42,20 +71,18 @@ BOOST_AUTO_TEST_CASE(addition_test)
                      {3, 4, 5},
                      {6, 7, 8}
              }}};
-    auto resultMatrix12 = matrix1 + matrix2;
     MatLib::matrix<float, 3, 3> expectedMatrix12 = {
             {{{0, 2, 4},
                      {6, 8, 10},
                      {12, 14, 16}
              }}};
-    auto resultMatrix1S = matrix1 + 7;
     MatLib::matrix<float, 3, 3> expectedMatrix1S = {
             {{{7, 8, 9},
                      {10, 11, 12},
                      {13, 14, 15}
              }}};
-    BOOST_TEST(resultMatrix12 == expectedMatrix12);
-    BOOST_TEST(resultMatrix1S == expectedMatrix1S);
+    BOOST_TEST((matrix1 + matrix2) == expectedMatrix12);
+    BOOST_TEST((matrix1 + 7) == expectedMatrix1S);
 }
 
 BOOST_AUTO_TEST_CASE(subtraction_test)
@@ -70,20 +97,18 @@ BOOST_AUTO_TEST_CASE(subtraction_test)
                      {3, 4, 5},
                      {6, 7, 8}
              }}};
-    auto resultMatrix12 = matrix1 - matrix2;
     MatLib::matrix<float, 3, 3> expectedMatrix12 = {
             {{{0, 0, 0},
                      {0, 0, 0},
                      {0, 0, 0}
              }}};
-    auto resultMatrix1S = matrix1 - 5;
     MatLib::matrix<float, 3, 3> expectedMatrix1S = {
             {{{-5, -4, -3},
                      {-2, -1, 0},
                      {1, 2, 3}
              }}};
-    BOOST_TEST(resultMatrix12 == expectedMatrix12);
-    BOOST_TEST(resultMatrix1S == expectedMatrix1S);
+    BOOST_TEST((matrix1 - matrix2) == expectedMatrix12);
+    BOOST_TEST((matrix1 - 5) == expectedMatrix1S);
 }
 
 BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
