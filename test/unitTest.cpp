@@ -116,6 +116,7 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
                      {12, 47.234, 5, 14, 14},
                      {3.32, 6, 1, 26, 5}
              }}};
+    std::cout << matrix3x3.size();
     BOOST_TEST(matrix2x2.getDeterminant() == -3);
     BOOST_TEST(matrix3x3.getDeterminant() == 0);
     BOOST_TEST(matrix4x4.getDeterminant() == 14466);
@@ -151,4 +152,83 @@ BOOST_AUTO_TEST_CASE(row_echelon_test)
              }}};
     auto [result4x4, isAddition4x4] = matrix4x4.getRowEchelon();
     BOOST_TEST(result4x4 == expectedMatrix4x4);
+}
+
+BOOST_AUTO_TEST_CASE(transpose_test)
+{
+    MatLib::matrix<float, 3, 3> matrix3x3 = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
+            {{{0, 3, 6},
+                     {1, 4, 7},
+                     {2, 5, 8}
+             }}};
+    BOOST_TEST(matrix3x3.getTranspose() == expectedMatrix3x3);
+    MatLib::matrix<int, 4, 4> matrix4x4 = {
+            {{{5, 8, 2, 3},
+                     {4, 5, 12, 7},
+                     {4, 9, 10, 11},
+                     {12, 77, 14, 14}
+             }}};
+    MatLib::matrix<int, 4, 4> expectedMatrix4x4 = {
+            {{{5, 4, 4, 12},
+                     {8, 5, 9, 77},
+                     {2, 12, 10, 14},
+                     {3, 7, 11, 14}
+             }}};
+    BOOST_TEST(matrix4x4.getTranspose() == expectedMatrix4x4);
+}
+
+BOOST_AUTO_TEST_CASE(augment_test)
+{
+    MatLib::matrix<float, 3, 3> matrix3x3 = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    MatLib::matrix<float, 3, 3> matrix3x32 = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    MatLib::matrix<float, 3, 6> expectedMatrix3x3 = {
+            {{{0, 1, 2, 0,  1, 2},
+                     {3, 4, 5, 3, 4, 5},
+                     {6, 7, 8, 6, 7, 8}
+             }}};
+    [[maybe_unused]] auto augmentedMatrix = matrix3x3.getAugment(matrix3x32);
+    BOOST_TEST(augmentedMatrix == expectedMatrix3x3);
+}
+
+BOOST_AUTO_TEST_CASE(identity_test)
+{
+    MatLib::matrix<float, 3, 3> matrix3x3 = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
+            {{{1, 0, 0},
+                     {0, 1, 0},
+                     {0, 0, 1}
+             }}};
+    BOOST_TEST(matrix3x3.getIdentity() == expectedMatrix3x3);
+}
+
+BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01))
+{
+    MatLib::matrix<float, 3, 3> matrix3x3 = {
+            {{{3, 7, 8},
+                     {5, 1, 5},
+                     {7, 2, 5}
+             }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
+            {{{-0.063291139240506329147, -0.24050632911392405062	, 0.3417721518987341772},
+                     {0.12658227848101265819, -0.51898734177215189872	, 0.31645569620253164556},
+                     {0.037974683544303797508, 0.54430379746835443037, -0.40506329113924050632}
+             }}};
+    BOOST_TEST(matrix3x3.getInverse() == expectedMatrix3x3);
 }
