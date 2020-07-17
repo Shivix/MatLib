@@ -1,7 +1,6 @@
 #ifndef MATLIB_MATRIX_HPP
 #define MATLIB_MATRIX_HPP
 
-#include <cstddef>
 #include <array>
 #include <tuple>
 
@@ -10,29 +9,32 @@ namespace MatLib{
     template<typename T, std::size_t rows, std::size_t cols>
     class matrix{
     public:
-        // No explicit constructor/ destructor etc. for aggregate
+        // No explicit constructor/ destructor etc. for aggregate all members must also be public
         
         std::array<std::array<T, cols>, rows> m_data{};
         
+        [[nodiscard]] constexpr bool empty() const noexcept {
+            return size() == 0;
+        } 
         void fill(const T& value){
             std::fill(m_data[0][0], m_data[rows][cols], value);
         }
-        matrix<T, rows, cols * 2> getAugment(const matrix& other){ // returns a matrix where the other matrix is "attached" to the original
+        matrix<T, rows, cols * 2> getAugment(const matrix& other) const { // returns a matrix where the other matrix is "attached" to the original
             matrix<T, rows, cols * 2> resultMatrix = {};
             
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < resultMatrix[0].size(); ++j){
                     if(j >= cols){
-                        resultMatrix.m_data[i][j] = other.m_data[i][j - cols];
+                        resultMatrix[i][j] = other[i][j - cols];
                     }
                     else{
-                        resultMatrix.m_data[i][j] = this->m_data[i][j];
+                        resultMatrix[i][j] = m_data[i][j];
                     }
                 }
             }
             return resultMatrix;
         }
-        T getDeterminant(){
+        [[nodiscard]] T getDeterminant() const {
             static_assert(rows == cols, "Must be a square matrix");
             T determinant = 1;
             if(rows == 1){
@@ -42,7 +44,7 @@ namespace MatLib{
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
             else{
-                auto [rowEchelonFormMatrix, isNegative] = this->getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
+                auto [rowEchelonFormMatrix, isNegative] = getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
                     if(isNegative){
                         determinant *= -rowEchelonFormMatrix[i][i];
@@ -54,67 +56,66 @@ namespace MatLib{
             }
             return determinant;
         }
-        matrix getIdentity(){
+        [[nodiscard]] matrix getIdentity() const {
             matrix identityMatrix = {};
 
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
                     if(i == j){
-                        identityMatrix.m_data[i][j] = 1;
+                        identityMatrix[i][j] = 1;
                     }
                     else{
-                        identityMatrix.m_data[i][j] = 0;
+                        identityMatrix[i][j] = 0;
                     }
                 }
             }
             return identityMatrix;
         }
-        matrix getInverse(){
+        [[nodiscard]] matrix getInverse() const {
             
             matrix<T, rows, cols * 2> augIdentMatrix = getAugment(getIdentity()); // gets the identity matrix and then augments it onto the original matrix
             
-            const std::size_t AUG_ID_COLS = augIdentMatrix.m_data[0].size(); // all arrays within the first have the same size
+            const std::size_t AUG_ID_COLS = augIdentMatrix[0].size(); // all arrays within the first have the same size
             
             // replace elements based on a constant scalar from ANOTHER row
             for(std::size_t i = 0; i < cols; ++i){
                 for(std::size_t j = 0; j < rows; ++j){
                     if(i != j){
-                        T scalar = augIdentMatrix.m_data[j][i] / augIdentMatrix.m_data[i][i];
+                        T scalar = augIdentMatrix[j][i] / augIdentMatrix[i][i];
                         for(std::size_t k = 0; k < AUG_ID_COLS; ++k){
-                            augIdentMatrix.m_data[j][k] -= augIdentMatrix.m_data[i][k] * scalar;
+                            augIdentMatrix[j][k] -= augIdentMatrix[i][k] * scalar;
                         } 
                     }
                 }
             }
             // divide each row element by the diagonal elements that were skipped previously
             for (std::size_t i = 0; i < rows; i++) {
-                T scalar = augIdentMatrix.m_data[i][i];
+                T scalar = augIdentMatrix[i][i];
                 for (std::size_t j = 0; j < AUG_ID_COLS; j++) {
-                    augIdentMatrix.m_data[i][j] = augIdentMatrix.m_data[i][j] / scalar;
+                    augIdentMatrix[i][j] = augIdentMatrix[i][j] / scalar;
                 }
             }
             // add the inverted half of the augmented matrix to it's own matrix
             matrix inversedMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
-                    inversedMatrix.m_data[i][j] = augIdentMatrix.m_data[i][j + cols];
+                    inversedMatrix[i][j] = augIdentMatrix[i][j + cols];
                 }
             }
-            
             return inversedMatrix;
         }
-        std::tuple<matrix, bool> getRowEchelon(){ // returns the row echelon form matrix so that the original is kept
-            auto newData = m_data;
+        std::tuple<matrix, bool> getRowEchelon() const { // returns the row echelon form matrix so that the original is kept
+            matrix resultMatrix = *this;
             
             bool isInverted = false; // keeps track of the sign of the determinant (before multiplication)
 
             for(std::size_t pivotRow = 0; (rows < cols ? pivotRow < rows - 1 : pivotRow < cols - 1); ++pivotRow){
-                if(newData[pivotRow][pivotRow] == 0){ 
+                if(resultMatrix[pivotRow][pivotRow] == 0){ 
 
                 // swap pivot element with another non 0 element
                     std::size_t swapRow = pivotRow;
                     for(std::size_t i = pivotRow + 1; i < rows; i++){
-                        if(newData[i][pivotRow] != 0){
+                        if(resultMatrix[i][pivotRow] != 0){
                             swapRow = i;
                             break;
                         }
@@ -124,168 +125,167 @@ namespace MatLib{
                     }
                     isInverted = !isInverted;
                     // swaps the swapRow and pivotRow
-                    newData[swapRow].swap(newData[pivotRow]);
+                    resultMatrix[swapRow].swap(resultMatrix[pivotRow]);
                 }
                 // eliminate elements in x col under x col
                 for(std::size_t targetRow = pivotRow + 1; targetRow < rows; ++targetRow){
-                    T scale = newData[targetRow][pivotRow] / newData[pivotRow][pivotRow];
+                    T scale = resultMatrix[targetRow][pivotRow] / resultMatrix[pivotRow][pivotRow];
                     
                     for(std::size_t targetCol = 0; targetCol < cols; ++targetCol){
-                        newData[targetRow][targetCol] -= scale * newData[pivotRow][targetCol];
+                        resultMatrix[targetRow][targetCol] -= scale * resultMatrix[pivotRow][targetCol];
                     }
                 }
             }
-            //return isInverted;
-            matrix tempMatrix = {};
-            tempMatrix.m_data = newData;
-
-            return std::make_tuple(tempMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign determinant
+            return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign
         }
-        matrix getTranspose(){
+        [[nodiscard]] matrix getTranspose() const {
             matrix<T, rows, cols> transposedMatrix = {}; // rows and cols are in opposite order for transposed matrix
             
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
-                    transposedMatrix.m_data[i][j] = this->m_data[j][i];
+                    transposedMatrix[i][j] = m_data[j][i];
                 }
             }
             return transposedMatrix;
         }
-        constexpr std::size_t size() const noexcept{
+        [[nodiscard]] constexpr std::size_t size() const noexcept{
             return rows * cols;
         }
         void swap(matrix& other){
-            for(std::size_t i = 0; i < m_data.size(); ++i){
-                m_data[i].swap(other.m_data[i]);
+            for(std::size_t i = 0; i < rows; ++i){
+                m_data[i].swap(other[i]);
             }
         }
-        // Operators
+        // Arithmetic operators
         matrix operator + (const matrix& other) const noexcept { 
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] + other.m_data[i][j];
+                    resultMatrix[i][j] = m_data[i][j] + other[i][j];
                 }
             }
             return resultMatrix;
-        }
-        void operator += (const matrix& other) noexcept {
-            *this = *this + other;
         }
         matrix operator + (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] + scalar;
+                    resultMatrix[i][j] = m_data[i][j] + scalar;
                 }
             }
             return resultMatrix;
-        }
-        void operator += (const T& scalar) noexcept {
-            *this = *this + scalar;
         }
         matrix operator - (const matrix& other) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] - other.m_data[i][j];
+                    resultMatrix[i][j] = m_data[i][j] - other[i][j];
                 }
             }
             return resultMatrix;
-        }
-        void operator -= (const matrix& other) noexcept {
-            *this = *this - other;
         }
         matrix operator - (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] - scalar;
+                    resultMatrix[i][j] = m_data[i][j] - scalar;
                 }
             }
             return resultMatrix;
         }
-        void operator -= (const T& scalar) noexcept {
-            *this = *this - scalar;
-        }
         template<std::size_t otherRows, std::size_t otherCols>
         matrix operator * (const matrix<T, otherCols, otherRows>& other) const noexcept { 
             matrix<T, cols, otherRows> resultMatrix = {};
-            for(size_t i = 0; i < otherRows; ++i){
-                for(size_t j = 0; j < cols; ++j){
-                    for(size_t k = 0; k < rows; ++k){
-                        resultMatrix.m_data[i][j] += this->m_data[i][k] * other.m_data[k][j];
+            for(std::size_t i = 0; i < otherRows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    for(std::size_t k = 0; k < rows; ++k){
+                        resultMatrix[i][j] += m_data[i][k] * other[k][j];
                     }
                 }
             }
             return resultMatrix;
         }
-        template<std::size_t otherRows, std::size_t otherCols>
-        void operator *= (const matrix<T, otherCols, otherRows>& other) noexcept {
-            *this = *this * other;
-        }
         matrix operator * (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
-            for(size_t i = 0; i < rows; ++i){
-                for(size_t j = 0; j < cols; ++j){
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] * scalar;
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    resultMatrix[i][j] = m_data[i][j] * scalar;
                 }
             }
             return resultMatrix;
-        }
-        void operator *= (const T& scalar) noexcept {
-            *this = *this * scalar;
         }
         template<std::size_t otherRows, std::size_t otherCols>
         matrix operator / (matrix<T, otherCols, otherRows>& other) const noexcept {
             matrix invertedMatrix = other.getInverse();
             return (*this * invertedMatrix);
         }
-        template<std::size_t otherRows, std::size_t otherCols>
-        void operator /= (const matrix<T, otherCols, otherRows>& other) noexcept {
-            *this = *this / other;
-        }
         matrix operator / (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
-            for(size_t i = 0; i < rows; ++i){
-                for(size_t j = 0; j < cols; ++j){
-                    resultMatrix.m_data[i][j] = this->m_data[i][j] / scalar;
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    resultMatrix[i][j] = m_data[i][j] / scalar;
                 }
             }
             return resultMatrix;
         }
+        // Arithmetic assignment operators
+        void operator += (const matrix& other) noexcept {
+            *this = *this + other;
+        }
+        void operator += (const T& scalar) noexcept {
+            *this = *this + scalar;
+        }
+        void operator -= (const matrix& other) noexcept {
+            *this = *this - other;
+        }
+        void operator -= (const T& scalar) noexcept {
+            *this = *this - scalar;
+        }
+        template<std::size_t otherRows, std::size_t otherCols>
+        void operator *= (const matrix<T, otherCols, otherRows>& other) noexcept {
+            *this = *this * other;
+        }
+        void operator *= (const T& scalar) noexcept {
+            *this = *this * scalar;
+        }
+        template<std::size_t otherRows, std::size_t otherCols>
+        void operator /= (const matrix<T, otherCols, otherRows>& other) noexcept {
+            *this = *this / other;
+        }
         void operator /= (const T& scalar) noexcept {
             *this = *this / scalar;
         }
-        std::array<T, cols> operator [] (const std::size_t& index) noexcept {
+        // access
+        std::array<T, cols>& operator [] (const std::size_t& index) noexcept {
             return m_data[index];
         }
-        constexpr std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
+        std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
-        bool operator == (const matrix& matrix2) const noexcept {
-            for(std::size_t i = 0; i < this->size() / cols; ++i){
-                if(this->m_data[i] == matrix2[i]){
-                    return true;
-                }
-            }
-            return false;
-        }
-        bool operator != (const matrix& other) const noexcept {
-            for(std::size_t i = 0; i < this->size() / cols; ++i){
-                if(this->m_data[i] != other[i]){
-                    return true;
-                }
-            }
-            return false;
-        }
-        // Iterators
         T back() noexcept {
             return *end();
         }
         T front() noexcept {
             return *begin();
         }
+        // comparison operators
+        bool operator == (const matrix& matrix2) const noexcept {
+            for(std::size_t i = 0; i < size() / cols; ++i){
+                if(m_data[i] == matrix2[i]){
+                    return true;
+                }
+            }
+            return false;
+        }
+        bool operator != (const matrix& other) const noexcept {
+            for(std::size_t i = 0; i < size() / cols; ++i){
+                if(m_data[i] != other[i]){
+                    return true;
+                }
+            }
+            return false;
+        }
+        // Iterators
         T* begin() noexcept {
             return &m_data[0][0];
         }
@@ -310,8 +310,6 @@ namespace MatLib{
         std::reverse_iterator<T*> rend() noexcept {
             return std::reverse_iterator<T*>(begin());
         }
-    private:
-        
     };
 }
 
