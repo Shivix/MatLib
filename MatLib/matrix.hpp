@@ -217,17 +217,20 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator / (const matrix& other) noexcept {
-            
-            
-            
+        template<std::size_t otherRows, std::size_t otherCols>
+        matrix operator / (matrix<T, otherCols, otherRows>& other) noexcept {
+            matrix invertedMatrix = other.getInverse();
+            auto result = (*this * invertedMatrix);
+            return result;
         }
         matrix operator / (const T& scalar) noexcept {
+            matrix<T, cols, rows> resultMatrix = {};
             for(size_t i = 0; i < rows; ++i){
                 for(size_t j = 0; j < cols; ++j){
-                    this->m_data[i][j] * scalar;
+                    resultMatrix.m_data[i][j] = this->m_data[i][j] / scalar;
                 }
             }
+            return resultMatrix;
         }
         std::array<T, cols> operator [] (const std::size_t& index) noexcept { // static_assert for boundaries
             return m_data[index];
