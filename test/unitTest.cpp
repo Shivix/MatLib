@@ -2,7 +2,7 @@
 #define BOOST_TEST_MODULE MatLib Test
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE(multiply_test)
+BOOST_AUTO_TEST_CASE(multiply_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix1 = {
             {{{0, 1, 2},
@@ -14,21 +14,37 @@ BOOST_AUTO_TEST_CASE(multiply_test)
                               {3, 4, 5},
                               {6, 7, 8}
              }}};
+    MatLib::matrix<int, 3, 3> matrix1i = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    MatLib::matrix<int, 3, 3> matrix2i = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
     MatLib::matrix<float, 3, 3> expectedMatrix = {
             {{{15, 18, 21},
                               {42, 54, 66},
                               {69, 90, 111}
             }}};
+    MatLib::matrix<int, 3, 3> expectedMatrixi = {
+            {{{15, 18, 21},
+                     {42, 54, 66},
+                     {69, 90, 111}
+             }}};
     MatLib::matrix<float, 3, 3> expectedMatrix2 = {
             {{{0, 5, 10},
                      {15, 20, 25},
                      {30, 35, 40}
              }}};
     BOOST_TEST((matrix1 * matrix2) == expectedMatrix);
+    BOOST_TEST((matrix1i * matrix2i) == expectedMatrixi);
     BOOST_TEST((matrix1 * 5) == expectedMatrix2);
 }
 
-BOOST_AUTO_TEST_CASE(divide_test, *boost::unit_test::tolerance(0.01))
+BOOST_AUTO_TEST_CASE(divide_test, *boost::unit_test::tolerance(0.01)) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix1 = {
             {{{10, 11, 12},
@@ -45,22 +61,21 @@ BOOST_AUTO_TEST_CASE(divide_test, *boost::unit_test::tolerance(0.01))
                      {-0.3, -0.1, 1.1},
                      {0.6, 0.2, 0.8}
              }}};
-    MatLib::matrix<float, 3, 3> matrix3 = {
+    MatLib::matrix<double, 3, 3> matrix3 = {
                     {{{10, 15, 20},
                              {5, 6, 8},
                              {14, 7, 88}
                      }}};
-    MatLib::matrix<float, 3, 3> expectedMatrix2 = {
+    MatLib::matrix<double, 3, 3> expectedMatrix2 = {
             {{{2, 3, 4},
                      {1, 1.2, 1.6},
                      {2.8, 1.4, 17.6}
              }}};
     BOOST_TEST((matrix1 / matrix2) == expectedMatrix);
     BOOST_TEST((matrix3 / 5) == expectedMatrix2);
-    [[maybe_unused]] auto test = expectedMatrix2 * expectedMatrix;
 }
 
-BOOST_AUTO_TEST_CASE(addition_test)
+BOOST_AUTO_TEST_CASE(addition_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix1 = {
             {{{0, 1, 2},
@@ -93,7 +108,7 @@ BOOST_AUTO_TEST_CASE(addition_test)
     BOOST_TEST(expectedMatrix1S == expectedTest);
 }
 
-BOOST_AUTO_TEST_CASE(subtraction_test)
+BOOST_AUTO_TEST_CASE(subtraction_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix1 = {
             {{{0, 1, 2},
@@ -119,7 +134,7 @@ BOOST_AUTO_TEST_CASE(subtraction_test)
     BOOST_TEST((matrix1 - 5) == expectedMatrix1S);
 }
 
-BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
+BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01)) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -156,7 +171,7 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
     BOOST_TEST(matrix5x5.getDeterminant() == 5182129.02628431);
 }
 
-BOOST_AUTO_TEST_CASE(row_echelon_test)
+BOOST_AUTO_TEST_CASE(row_echelon_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -186,7 +201,7 @@ BOOST_AUTO_TEST_CASE(row_echelon_test)
     BOOST_TEST(result4x4 == expectedMatrix4x4);
 }
 
-BOOST_AUTO_TEST_CASE(transpose_test)
+BOOST_AUTO_TEST_CASE(transpose_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -214,7 +229,7 @@ BOOST_AUTO_TEST_CASE(transpose_test)
     BOOST_TEST(matrix4x4.getTranspose() == expectedMatrix4x4);
 }
 
-BOOST_AUTO_TEST_CASE(augment_test)
+BOOST_AUTO_TEST_CASE(augment_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -234,7 +249,7 @@ BOOST_AUTO_TEST_CASE(augment_test)
     BOOST_TEST(matrix3x3.getAugment(matrix3x32) == expectedMatrix3x3);
 }
 
-BOOST_AUTO_TEST_CASE(identity_test)
+BOOST_AUTO_TEST_CASE(identity_test) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -249,7 +264,7 @@ BOOST_AUTO_TEST_CASE(identity_test)
     BOOST_TEST(matrix3x3.getIdentity() == expectedMatrix3x3);
 }
 
-BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01))
+BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01)) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{3, 7, 8},
@@ -264,7 +279,7 @@ BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01))
     BOOST_TEST(matrix3x3.getInverse() == expectedMatrix3x3);
 }
 
-BOOST_AUTO_TEST_CASE(sort_test) // helps check begin and rebegin iterators.
+BOOST_AUTO_TEST_CASE(sort_test)  // NOLINT // helps check begin and rebegin iterators.
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{3, 7, 8},
@@ -287,7 +302,7 @@ BOOST_AUTO_TEST_CASE(sort_test) // helps check begin and rebegin iterators.
     BOOST_TEST(matrix3x3 == expectedReversed);
 }
 
-BOOST_AUTO_TEST_CASE(find_test) 
+BOOST_AUTO_TEST_CASE(find_test)  // NOLINT
 {
     MatLib::matrix<int, 3, 3> matrix3x3 = {
             {{{3, 7, 0},
