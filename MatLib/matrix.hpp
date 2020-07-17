@@ -7,7 +7,7 @@
 
 // TODO: range based for loop cuts of last element.
 namespace MatLib{
-    template<typename T, std::size_t cols, std::size_t rows>
+    template<typename T, std::size_t rows, std::size_t cols>
     class matrix{
     public:
         // No explicit constructor/ destructor etc. for aggregate
@@ -17,7 +17,21 @@ namespace MatLib{
         void fill(const T& value){
             std::fill(m_data[0][0], m_data[rows][cols], value);
         }
-        
+        matrix<T, rows, cols * 2> getAugment(const matrix& other){ // returns a matrix where the other matrix is "attached" to the original
+            matrix<T, rows, cols * 2> resultMatrix = {};
+            
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < resultMatrix[0].size(); ++j){
+                    if(j >= cols){
+                        resultMatrix.m_data[i][j] = other.m_data[i][j - cols];
+                    }
+                    else{
+                        resultMatrix.m_data[i][j] = this->m_data[i][j];
+                    }
+                }
+            }
+            return resultMatrix;
+        }
         T getDeterminant(){
             static_assert(rows == cols, "Must be a square matrix");
             T determinant = 1;
@@ -39,6 +53,55 @@ namespace MatLib{
                 }
             }
             return determinant;
+        }
+        matrix getIdentity(){
+            matrix identityMatrix = {};
+
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    if(i == j){
+                        identityMatrix.m_data[i][j] = 1;
+                    }
+                    else{
+                        identityMatrix.m_data[i][j] = 0;
+                    }
+                }
+            }
+            return identityMatrix;
+        }
+        matrix getInverse(){
+            
+            matrix<T, rows, cols * 2> augIdentMatrix = getAugment(getIdentity()); // gets the identity matrix and then augments it onto the original matrix
+            
+            const std::size_t AUG_ID_COLS = augIdentMatrix.m_data[0].size(); // all arrays within the first have the same size
+            
+            // replace elements based on a constant scalar from ANOTHER row
+            for(std::size_t i = 0; i < cols; ++i){
+                for(std::size_t j = 0; j < rows; ++j){
+                    if(i != j){
+                        T scalar = augIdentMatrix.m_data[j][i] / augIdentMatrix.m_data[i][i];
+                        for(std::size_t k = 0; k < AUG_ID_COLS; ++k){
+                            augIdentMatrix.m_data[j][k] -= augIdentMatrix.m_data[i][k] * scalar;
+                        } 
+                    }
+                }
+            }
+            // divide each row element by the diagonal elements that were skipped previously
+            for (std::size_t i = 0; i < rows; i++) {
+                T scalar = augIdentMatrix.m_data[i][i];
+                for (std::size_t j = 0; j < AUG_ID_COLS; j++) {
+                    augIdentMatrix.m_data[i][j] = augIdentMatrix.m_data[i][j] / scalar;
+                }
+            }
+            // add the inverted half of the augmented matrix to it's own matrix
+            matrix inversedMatrix = {};
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    inversedMatrix.m_data[i][j] = augIdentMatrix.m_data[i][j + cols];
+                }
+            }
+            
+            return inversedMatrix;
         }
         std::tuple<matrix, bool> getRowEchelon(){ // returns the row echelon form matrix so that the original is kept
             auto newData = m_data;
@@ -77,6 +140,16 @@ namespace MatLib{
             tempMatrix.m_data = newData;
 
             return std::make_tuple(tempMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign determinant
+        }
+        matrix getTranspose(){
+            matrix<T, rows, cols> transposedMatrix = {}; // rows and cols are in opposite order for transposed matrix
+            
+            for(std::size_t i = 0; i < rows; ++i){
+                for(std::size_t j = 0; j < cols; ++j){
+                    transposedMatrix.m_data[i][j] = this->m_data[j][i];
+                }
+            }
+            return transposedMatrix;
         }
         constexpr std::size_t size() const noexcept{
             return rows * cols;
