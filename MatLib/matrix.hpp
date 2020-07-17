@@ -4,20 +4,19 @@
 #include <array>
 #include <tuple>
 
-// TODO: range based for loop cuts of last element.
 namespace MatLib{
     template<typename T, std::size_t rows, std::size_t cols>
     class matrix{
     public:
         // No explicit constructor/ destructor etc. for aggregate all members must also be public
         
-        std::array<std::array<T, cols>, rows> m_data{};
+        std::array<std::array<T, cols>, rows> m_data{}; // stores the matrix data
         
         [[nodiscard]] constexpr bool empty() const noexcept {
             return size() == 0;
         } 
         void fill(const T& value){
-            std::fill(m_data[0][0], m_data[rows][cols], value);
+            std::fill(begin(), end(), value);
         }
         matrix<T, rows, cols * 2> getAugment(const matrix& other) const { // returns a matrix where the other matrix is "attached" to the original
             matrix<T, rows, cols * 2> resultMatrix = {};
@@ -151,7 +150,7 @@ namespace MatLib{
         [[nodiscard]] constexpr std::size_t size() const noexcept{
             return rows * cols;
         }
-        void swap(matrix& other){
+        void swap(matrix& other) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
                 m_data[i].swap(other[i]);
             }
@@ -262,16 +261,34 @@ namespace MatLib{
         std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
-        T back() noexcept {
+        T& at(std::size_t rowIndex, std::size_t colIndex){
+            if(rowIndex >= rows || colIndex >= cols){
+                throw std::out_of_range("Element out of range");
+            }
+            return m_data[rowIndex][colIndex];
+        }
+        T* data() noexcept {
+            return &m_data[0][0];
+        }
+        const T* data() const noexcept { // if the data is const this function will be called instead
+            return &m_data[0][0];
+        }
+        T& back() noexcept {
             return *end();
         }
-        T front() noexcept {
+        const T& back() const noexcept {
+            return *end();
+        }
+        T& front() noexcept {
+            return *begin();
+        }
+        const T& front() const noexcept {
             return *begin();
         }
         // comparison operators
         bool operator == (const matrix& matrix2) const noexcept {
             for(std::size_t i = 0; i < size() / cols; ++i){
-                if(m_data[i] == matrix2[i]){
+                if(m_data[i] == matrix2[i]){ // uses the std::array operator == overload and runs it for each column
                     return true;
                 }
             }
@@ -296,13 +313,13 @@ namespace MatLib{
             return static_cast<const T*>(&m_data[0][0]);
         }
         T* end() noexcept {
-            return &m_data[rows - 1][cols - 1];
+            return &m_data[rows - 1][cols];
         }
         const T* end() const noexcept {
-            return &m_data[rows - 1][cols - 1];
+            return &m_data[rows - 1][cols];
         }
         const T* cend() const noexcept {
-            return static_cast<const T*>(&m_data[rows - 1][cols - 1]);
+            return static_cast<const T*>(&m_data[rows - 1][cols]);
         }
         std::reverse_iterator<T*> rbegin() noexcept {
             return std::reverse_iterator<T*>(end());
