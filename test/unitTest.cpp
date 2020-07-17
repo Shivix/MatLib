@@ -149,7 +149,6 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01))
                      {12, 47.234, 5, 14, 14},
                      {3.32, 6, 1, 26, 5}
              }}};
-    std::cout << matrix3x3.size();
     BOOST_TEST(matrix2x2.getDeterminant() == -3);
     BOOST_TEST(matrix3x3.getDeterminant() == 0);
     BOOST_TEST(matrix4x4.getDeterminant() == 14466);
@@ -286,4 +285,14 @@ BOOST_AUTO_TEST_CASE(sort_test) // helps check begin and rebegin iterators.
              }}};
     std::sort(matrix3x3.rbegin(), matrix3x3.rend());
     BOOST_TEST(matrix3x3 == expectedReversed);
+}
+
+BOOST_AUTO_TEST_CASE(find_test) 
+{
+    MatLib::matrix<int, 3, 3> matrix3x3 = {
+            {{{3, 7, 0},
+                     {5, 1, 2},
+                     {5, 2, 5}
+             }}};
+    BOOST_TEST((*std::find(matrix3x3.cbegin(), matrix3x3.cend(), 0)) == 0);
 }
