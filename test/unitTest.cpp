@@ -264,3 +264,26 @@ BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01))
              }}};
     BOOST_TEST(matrix3x3.getInverse() == expectedMatrix3x3);
 }
+
+BOOST_AUTO_TEST_CASE(sort_test) // helps check begin and rebegin iterators.
+{
+    MatLib::matrix<float, 3, 3> matrix3x3 = {
+            {{{3, 7, 8},
+                     {5, 1, 5},
+                     {7, 2, 5}
+             }}};
+    MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
+            {{{1, 2, 3},
+                     {5, 5, 5},
+                     {7, 7, 8}
+             }}};
+    std::sort(matrix3x3.begin(), matrix3x3.end());
+    BOOST_TEST(matrix3x3 == expectedMatrix3x3);
+    MatLib::matrix<float, 3, 3> expectedReversed = {
+            {{{8, 7, 7},
+                     {5, 5, 5},
+                     {1, 2, 3}
+             }}};
+    std::sort(matrix3x3.rbegin(), matrix3x3.rend());
+    BOOST_TEST(matrix3x3 == expectedReversed);
+}
