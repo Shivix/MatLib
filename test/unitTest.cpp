@@ -57,6 +57,7 @@ BOOST_AUTO_TEST_CASE(divide_test, *boost::unit_test::tolerance(0.01))
              }}};
     BOOST_TEST((matrix1 / matrix2) == expectedMatrix);
     BOOST_TEST((matrix3 / 5) == expectedMatrix2);
+    [[maybe_unused]] auto test = expectedMatrix2 * expectedMatrix;
 }
 
 BOOST_AUTO_TEST_CASE(addition_test)
@@ -83,6 +84,13 @@ BOOST_AUTO_TEST_CASE(addition_test)
              }}};
     BOOST_TEST((matrix1 + matrix2) == expectedMatrix12);
     BOOST_TEST((matrix1 + 7) == expectedMatrix1S);
+    expectedMatrix1S += 1;
+    MatLib::matrix<float, 3, 3> expectedTest = {
+            {{{8, 9, 10},
+                     {11, 12, 13},
+                     {14, 15, 16}
+             }}};
+    BOOST_TEST(expectedMatrix1S == expectedTest);
 }
 
 BOOST_AUTO_TEST_CASE(subtraction_test)
@@ -224,8 +232,7 @@ BOOST_AUTO_TEST_CASE(augment_test)
                      {3, 4, 5, 3, 4, 5},
                      {6, 7, 8, 6, 7, 8}
              }}};
-    [[maybe_unused]] auto augmentedMatrix = matrix3x3.getAugment(matrix3x32);
-    BOOST_TEST(augmentedMatrix == expectedMatrix3x3);
+    BOOST_TEST(matrix3x3.getAugment(matrix3x32) == expectedMatrix3x3);
 }
 
 BOOST_AUTO_TEST_CASE(identity_test)
