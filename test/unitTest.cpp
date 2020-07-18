@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01)) // NO
     BOOST_TEST(matrix5x5.getDeterminant() == 5182129.02628431);
 }
 
-BOOST_AUTO_TEST_CASE(row_echelon_test) // NOLINT
+BOOST_AUTO_TEST_CASE(row_echelon_test, *boost::unit_test::tolerance(0.01)) // NOLINT
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
             {{{0, 1, 2},
@@ -180,22 +180,22 @@ BOOST_AUTO_TEST_CASE(row_echelon_test) // NOLINT
              }}};
     MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
             {{{3, 4, 5},
-                     {3, 1, 2},
-                     {6, 7, 0}
+                     {0, 1, 2},
+                     {0, 0, 0}
              }}};
     auto [result3x3, isAddition] = matrix3x3.getRowEchelon();
     BOOST_TEST(result3x3 == expectedMatrix3x3);
-    MatLib::matrix<int, 4, 4> matrix4x4 = {
+    MatLib::matrix<float, 4, 4> matrix4x4 = {
             {{{5, 8, 2, 3},
                      {4, 5, 12, 7},
                      {4, 9, 10, 11},
                      {12, 77, 14, 14}
              }}};
-    MatLib::matrix<int, 4, 4> expectedMatrix4x4 = {
+    MatLib::matrix<float, 4, 4> expectedMatrix4x4 = {
             {{{5, 8, 2, 3},
-                     {-0, -1, 10, 4},
-                     {0, 0, 27, 17},
-                     {0, 0, 0, -74}
+                     {0, -1.4, 10.4, 4.6},
+                     {0, 0, 27.7140007, 17.1429996},
+                     {0, 0, 0, -74.5670013}
              }}};
     auto [result4x4, isAddition4x4] = matrix4x4.getRowEchelon();
     BOOST_TEST(result4x4 == expectedMatrix4x4);
@@ -272,9 +272,9 @@ BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01)) // NOLINT
                      {7, 2, 5}
              }}};
     MatLib::matrix<float, 3, 3> expectedMatrix3x3 = {
-            {{{-0.063291139240506329147, -0.24050632911392405062	, 0.3417721518987341772},
-                     {0.12658227848101265819, -0.51898734177215189872	, 0.31645569620253164556},
-                     {0.037974683544303797508, 0.54430379746835443037, -0.40506329113924050632}
+            {{{-0.0632911697, -0.240506232	, 0.341772079},
+                     {0.12658228, -0.518987358	, 0.316455722},
+                     {0.0379746817, 0.544303775, -0.405063301}
              }}};
     BOOST_TEST(matrix3x3.getInverse() == expectedMatrix3x3);
 }
@@ -296,7 +296,7 @@ BOOST_AUTO_TEST_CASE(sort_test)  // NOLINT // helps check begin and rebegin iter
     MatLib::matrix<float, 3, 3> expectedReversed = {
             {{{8, 7, 7},
                      {5, 5, 5},
-                     {1, 2, 3}
+                     {3, 2, 1}
              }}};
     std::sort(matrix3x3.rbegin(), matrix3x3.rend());
     BOOST_TEST(matrix3x3 == expectedReversed);
