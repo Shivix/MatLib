@@ -33,7 +33,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        [[nodiscard]] T getDeterminant() const {
+        T getDeterminant() const {
             static_assert(rows == cols, "Must be a square matrix");
             T determinant = 1;
             if(rows == 1){
@@ -55,7 +55,7 @@ namespace MatLib{
             }
             return determinant;
         }
-        [[nodiscard]] matrix getIdentity() const {
+        matrix getIdentity() const {
             matrix identityMatrix = {};
 
             for(std::size_t i = 0; i < rows; ++i){
@@ -70,7 +70,7 @@ namespace MatLib{
             }
             return identityMatrix;
         }
-        [[nodiscard]] matrix getInverse() const {
+        matrix getInverse() const {
             
             matrix<T, rows, cols * 2> augIdentMatrix = getAugment(getIdentity()); // gets the identity matrix and then augments it onto the original matrix
             
@@ -137,7 +137,7 @@ namespace MatLib{
             }
             return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign
         }
-        [[nodiscard]] matrix getTranspose() const {
+        matrix getTranspose() const {
             matrix<T, rows, cols> transposedMatrix = {}; // rows and cols are in opposite order for transposed matrix
             
             for(std::size_t i = 0; i < rows; ++i){
@@ -286,21 +286,27 @@ namespace MatLib{
             return *begin();
         }
         // comparison operators
-        bool operator == (const matrix& matrix2) const noexcept {
-            for(std::size_t i = 0; i < size() / cols; ++i){
-                if(m_data[i] == matrix2[i]){ // uses the std::array operator == overload and runs it for each column
-                    return true;
+        friend bool operator == (const matrix& matrix1, const matrix& matrix2) noexcept {
+            for(std::size_t i = 0; i < rows; ++i){
+                if(matrix1[i] != matrix2[i]){ // uses the std::array operator == overload and runs it for each column
+                    return false;
+                }
+                else{
+                    continue;
                 }
             }
-            return false;
+            return true;
         }
-        bool operator != (const matrix& other) const noexcept {
-            for(std::size_t i = 0; i < size() / cols; ++i){
-                if(m_data[i] != other[i]){
-                    return true;
+        friend bool operator != (const matrix& matrix1, const matrix& matrix2) noexcept {
+            for(std::size_t i = 0; i < rows; ++i){
+                if(matrix1[i] == matrix2[i]){ // uses the std::array operator == overload and runs it for each column
+                    return false;
+                }
+                else{
+                    continue;
                 }
             }
-            return false;
+            return true;
         }
         // Iterators
         T* begin() noexcept {
