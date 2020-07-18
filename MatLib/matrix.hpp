@@ -3,6 +3,7 @@
 
 #include <array>
 #include <tuple>
+#include <cmath>
 
 namespace MatLib{
     template<typename T, std::size_t rows, std::size_t cols>
@@ -134,6 +135,9 @@ namespace MatLib{
                         resultMatrix[targetRow][targetCol] -= scale * resultMatrix[pivotRow][targetCol];
                     }
                 }
+            }
+            for(auto&& i: resultMatrix){
+                i = std::round(i * 1000) / 1000;
             }
             return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign
         }
