@@ -10,7 +10,7 @@ Made with usability in mind:
 ## Features
 
 * Aggregate initialisation
-* Calculate determinant
+* Fast determinant calculation
 * Compile time transposing, multiplying and more.
 * Unit testing using Boost.Test
 * Works intuitively with < algorithm> functions
