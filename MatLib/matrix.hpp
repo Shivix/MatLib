@@ -278,10 +278,10 @@ namespace MatLib{
             return &m_data[0][0];
         }
         T& back() noexcept {
-            return *end();
+            return *(end() - 1);
         }
         const T& back() const noexcept {
-            return *end();
+            return *(end() - 1);
         }
         T& front() noexcept {
             return *begin();
