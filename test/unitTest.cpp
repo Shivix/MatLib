@@ -311,3 +311,92 @@ BOOST_AUTO_TEST_CASE(find_test)  // NOLINT
              }}};
     BOOST_TEST((*std::find(matrix3x3.cbegin(), matrix3x3.cend(), 0)) == 0);
 }
+
+BOOST_AUTO_TEST_CASE(empty_test)  // NOLINT
+{
+    MatLib::matrix<int, 3, 3> matrix3x3 = {
+            {{{3, 7, 0},
+                     {5, 1, 2},
+                     {5, 2, 5}
+             }}};
+    MatLib::matrix<int, 0, 0> emptyMatrix;
+    
+    BOOST_TEST(matrix3x3.empty() == false);
+    BOOST_TEST(emptyMatrix.empty() == true);
+}
+
+BOOST_AUTO_TEST_CASE(fill_test)  // NOLINT
+{
+    MatLib::matrix<int, 3, 3> fillMatrix;
+    fillMatrix.fill(4);
+    MatLib::matrix<int, 3, 3> resultMatrix = {{{{4, 4, 4},
+                                                {4, 4, 4},
+                                                {4, 4, 4}}}};
+    BOOST_TEST(fillMatrix == resultMatrix);
+}
+
+BOOST_AUTO_TEST_CASE(swap_test)  // NOLINT
+{
+    MatLib::matrix<int, 3, 3> matrix3x3 = {
+                                         {{{0, 1, 2},
+                                           {3, 4, 5},
+                                           {6, 7, 8}
+             }}};
+    MatLib::matrix<int, 3, 3> matrix3x32 = {
+                                         {{{3, 7, 0},
+                                           {5, 1, 2},
+                                           {5, 2, 5}
+             }}};
+    MatLib::matrix<int, 3, 3> matrix3x3R = {
+            {{{3, 7, 0},
+                     {5, 1, 2},
+                     {5, 2, 5}
+             }}};
+    MatLib::matrix<int, 3, 3> matrix3x32R = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    matrix3x3.swap(matrix3x32);
+    BOOST_TEST(matrix3x3 == matrix3x3R);
+    BOOST_TEST(matrix3x32 == matrix3x32R);
+}
+
+BOOST_AUTO_TEST_CASE(at_test)  // NOLINT
+{
+    MatLib::matrix<int, 3, 3> matrix3x3 = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 8}
+             }}};
+    BOOST_TEST(matrix3x3.at(0, 0) == 0);
+    BOOST_TEST(matrix3x3.at(2, 1) == 7);
+    try{
+        matrix3x3.at(20, 0) = 0; 
+    }
+    catch(std::out_of_range& except){
+        BOOST_TEST(except.what() == "Element out of range");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(iterator_test)  // NOLINT
+{
+    MatLib::matrix<int, 4, 4> matrix4x4 = {
+            {{{0, 1, 2, 3},
+                     {4, 5, 6, 7},
+                     {7, 9, 10, 11},
+                     {12, 13, 14, 15}
+             }}};
+    const MatLib::matrix<int, 4, 4> constMatrix = {
+            {{{0, 1, 2, 3},
+                     {4, 5, 6, 7},
+                     {7, 9, 10, 11},
+                     {12, 13, 14, 15}
+             }}};
+    BOOST_TEST(*matrix4x4.data() == 0);
+    BOOST_TEST(*constMatrix.data() == 0);
+    BOOST_TEST(matrix4x4.front() == 0);
+    BOOST_TEST(constMatrix.front() == 0);
+    BOOST_TEST(matrix4x4.back() == 15);
+    BOOST_TEST(constMatrix.back() == 15);
+}
