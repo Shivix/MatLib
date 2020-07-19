@@ -279,6 +279,15 @@ BOOST_AUTO_TEST_CASE(inverse_test, *boost::unit_test::tolerance(0.01)) // NOLINT
     BOOST_TEST(matrix3x3.getInverse() == expectedMatrix3x3);
 }
 
+BOOST_AUTO_TEST_CASE(orthogonal_test)  // NOLINT
+{
+    MatLib::matrix<int, 2, 2> matrix4x4 = {
+                   {{{1, 0},
+                     {0, 1}
+             }}};
+    BOOST_TEST(matrix4x4.isOrthogonal() == true);
+}
+
 BOOST_AUTO_TEST_CASE(sort_test)  // NOLINT // helps check begin and rebegin iterators.
 {
     MatLib::matrix<float, 3, 3> matrix3x3 = {
