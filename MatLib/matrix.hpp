@@ -151,6 +151,9 @@ namespace MatLib{
             }
             return transposedMatrix;
         }
+        bool isOrthogonal() const {
+            return getTranspose() == getInverse();
+        }
         [[nodiscard]] constexpr std::size_t size() const noexcept{
             return rows * cols;
         }
