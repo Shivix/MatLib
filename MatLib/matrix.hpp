@@ -292,7 +292,7 @@ namespace MatLib{
         // comparison operators
         friend bool operator == (const matrix& matrix1, const matrix& matrix2) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
-                if(matrix1[i] != matrix2[i]){ // uses the std::array operator == overload and runs it for each column
+                if(matrix1[i] != matrix2[i]){ // uses the std::array operator != overload and runs it for each column
                     return false;
                 }
                 else{
@@ -303,7 +303,7 @@ namespace MatLib{
         }
         friend bool operator != (const matrix& matrix1, const matrix& matrix2) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
-                if(matrix1[i] == matrix2[i]){ // uses the std::array operator == overload and runs it for each column
+                if(matrix1[i] == matrix2[i]){
                     return false;
                 }
                 else{
