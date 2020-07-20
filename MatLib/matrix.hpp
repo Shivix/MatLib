@@ -268,13 +268,13 @@ namespace MatLib{
         constexpr const std::array<T, cols>& operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
-        constexpr T& at(std::size_t rowIndex, std::size_t colIndex){
+        [[nodiscard]] constexpr T& at(std::size_t rowIndex, std::size_t colIndex){
             if(rowIndex >= rows || colIndex >= cols){
                 throw std::out_of_range("Element out of range");
             }
             return m_data[rowIndex][colIndex];
         }
-        constexpr const T& at(std::size_t rowIndex, std::size_t colIndex) const {
+        [[nodiscard]] constexpr const T& at(std::size_t rowIndex, std::size_t colIndex) const {
             if(rowIndex >= rows || colIndex >= cols){
                 throw std::out_of_range("Element out of range");
             }
