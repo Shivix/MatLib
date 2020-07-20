@@ -262,34 +262,40 @@ namespace MatLib{
             *this = *this / scalar;
         }
         // access
-        std::array<T, cols>& operator [] (const std::size_t& index) noexcept {
+        constexpr std::array<T, cols>& operator [] (const std::size_t& index) noexcept {
             return m_data[index];
         }
-        std::array<T, cols> operator [] (const std::size_t& index) const noexcept {
+        constexpr const std::array<T, cols>& operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
-        T& at(std::size_t rowIndex, std::size_t colIndex){
+        constexpr T& at(std::size_t rowIndex, std::size_t colIndex){
             if(rowIndex >= rows || colIndex >= cols){
                 throw std::out_of_range("Element out of range");
             }
             return m_data[rowIndex][colIndex];
         }
-        T* data() noexcept {
+        constexpr const T& at(std::size_t rowIndex, std::size_t colIndex) const {
+            if(rowIndex >= rows || colIndex >= cols){
+                throw std::out_of_range("Element out of range");
+            }
+            return m_data[rowIndex][colIndex];
+        }
+        constexpr T* data() noexcept {
             return &m_data[0][0];
         }
-        const T* data() const noexcept { // if the data is const this function will be called instead
+        constexpr const T* data() const noexcept { // if the data is const this function will be called instead
             return &m_data[0][0];
         }
-        T& back() noexcept {
+        constexpr T& back() noexcept {
             return *(end() - 1);
         }
-        const T& back() const noexcept {
+        constexpr const T& back() const noexcept {
             return *(end() - 1);
         }
-        T& front() noexcept {
+        constexpr T& front() noexcept {
             return *begin();
         }
-        const T& front() const noexcept {
+        constexpr const T& front() const noexcept {
             return *begin();
         }
         // comparison operators
@@ -316,28 +322,34 @@ namespace MatLib{
             return true;
         }
         // Iterators
-        T* begin() noexcept {
+        constexpr T* begin() noexcept {
             return &m_data[0][0];
         }
-        const T* begin() const noexcept {
+        constexpr const T* begin() const noexcept {
             return &m_data[0][0];
         }
-        const T* cbegin() const noexcept {
+        constexpr const T* cbegin() const noexcept {
             return static_cast<const T*>(&m_data[0][0]);
         }
-        T* end() noexcept {
-            return &m_data[rows - 1][cols];
-        }
-        const T* end() const noexcept {
-            return &m_data[rows - 1][cols];
-        }
-        const T* cend() const noexcept {
-            return static_cast<const T*>(&m_data[rows - 1][cols]);
-        }
-        std::reverse_iterator<T*> rbegin() noexcept {
+        constexpr std::reverse_iterator<T*> rbegin() noexcept {
             return std::reverse_iterator<T*>(end());
         }
-        std::reverse_iterator<T*> rend() noexcept {
+        constexpr const std::reverse_iterator<T*> crbegin() const noexcept {
+            return std::reverse_iterator<T*>(end());
+        }
+        constexpr T* end() noexcept {
+            return &m_data[rows - 1][cols];
+        }
+        constexpr const T* end() const noexcept {
+            return &m_data[rows - 1][cols];
+        }
+        constexpr const T* cend() const noexcept {
+            return static_cast<const T*>(&m_data[rows - 1][cols]);
+        }
+        constexpr std::reverse_iterator<T*> rend() noexcept {
+            return std::reverse_iterator<T*>(begin());
+        }
+        constexpr const std::reverse_iterator<T*> crend() const noexcept {
             return std::reverse_iterator<T*>(begin());
         }
     };
