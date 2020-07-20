@@ -378,8 +378,14 @@ BOOST_AUTO_TEST_CASE(at_test)  // NOLINT
                      {3, 4, 5},
                      {6, 7, 8}
              }}};
+    const MatLib::matrix<int, 3, 3> matrix3x3c = {
+            {{{0, 1, 2},
+                     {3, 4, 5},
+                     {6, 7, 22}
+             }}};
     BOOST_TEST(matrix3x3.at(0, 0) == 0);
     BOOST_TEST(matrix3x3.at(2, 1) == 7);
+    BOOST_TEST(matrix3x3c.at(2, 2) == 22);
     try{
         matrix3x3.at(20, 0) = 0; 
     }
