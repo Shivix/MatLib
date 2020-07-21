@@ -11,7 +11,7 @@ Made with usability in mind:
 
 * Aggregate initialisation
 * Fast determinant calculation
-* Compile time transposing, multiplying and more.
+* ~99% compile time functionality.
 * Unit testing using Boost.Test
 * Works intuitively with < algorithm> functions
 
