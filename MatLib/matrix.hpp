@@ -44,7 +44,7 @@ namespace MatLib{
                 return (m_data[0][0] * m_data[1][1]) - (m_data[1][0] * m_data[0][1]);
             }
             else{
-                auto [rowEchelonFormMatrix, isNegative] = getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
+                const auto [rowEchelonFormMatrix, isNegative] = getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
                     determinant *= rowEchelonFormMatrix[i][i];
                 }
@@ -138,7 +138,7 @@ namespace MatLib{
                 i = std::round(i * 1000) / 1000;
             }
             return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign 
-        }                                                     // the tuple currently prevents the function from happening at compile time.
+        }                                                     // the tuple currently prevents the function from happening at compile time. Struct also prevents it.
         constexpr matrix getTranspose() const {
             matrix<T, rows, cols> transposedMatrix = {}; // rows and cols are in opposite order for transposed matrix
             
