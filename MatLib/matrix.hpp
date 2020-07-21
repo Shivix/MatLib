@@ -46,12 +46,10 @@ namespace MatLib{
             else{
                 auto [rowEchelonFormMatrix, isNegative] = getRowEchelon(); // row echelon is calculated first to reduce the complexity down closer to O(N^2)
                 for(std::size_t i = 0; i < rows; ++i){ // determinate is the product of the main diagonal elements in a row echelon matrix
-                    if(isNegative){
-                        determinant *= -rowEchelonFormMatrix[i][i];
-                    }
-                    else{
-                        determinant *= rowEchelonFormMatrix[i][i];
-                    }
+                    determinant *= rowEchelonFormMatrix[i][i];
+                }
+                if(isNegative){
+                    determinant = -determinant;
                 }
             }
             return determinant;
