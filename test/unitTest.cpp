@@ -130,8 +130,14 @@ BOOST_AUTO_TEST_CASE(subtraction_test) // NOLINT
                      {-2, -1, 0},
                      {1, 2, 3}
              }}};
+    MatLib::matrix<float, 3, 3> negMatrix = {
+            {{{-0, -1, -2},
+                     {-3, -4, -5},
+                     {-6, -7, -8}
+             }}};
     BOOST_TEST((matrix1 - matrix2) == expectedMatrix12);
     BOOST_TEST((matrix1 - 5) == expectedMatrix1S);
+    BOOST_TEST(-matrix1 == negMatrix);
 }
 
 BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01)) // NOLINT
@@ -146,13 +152,13 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01)) // NO
                      {3, 4}
              }}};
     MatLib::matrix<float, 4, 4> matrix4x4 = {
-            {{{5, 8, 2, 3},
+            {{{0, 8, 2, 3},
                      {4, 5, 12, 7},
                      {4, 9, 10, 11},
                      {12, 77, 14, 14}
              }}};
     MatLib::matrix<int, 4, 4> matrix4x4i = {
-            {{{5, 8, 2, 3},
+            {{{0, 8, 2, 3},
                      {4, 5, 12, 7},
                      {4, 9, 10, 11},
                      {12, 77, 14, 14}
@@ -166,8 +172,8 @@ BOOST_AUTO_TEST_CASE(determinant_test, *boost::unit_test::tolerance(0.01)) // NO
              }}};
     BOOST_TEST(matrix2x2.getDeterminant() == -3);
     BOOST_TEST(matrix3x3.getDeterminant() == 0);
-    BOOST_TEST(matrix4x4.getDeterminant() == 14466);
-    BOOST_TEST(matrix4x4i.getDeterminant() == 14466);
+    BOOST_TEST(matrix4x4.getDeterminant() == -5904);
+    BOOST_TEST(matrix4x4i.getDeterminant() == -5904);
     BOOST_TEST(matrix5x5.getDeterminant() == 5182129.02628431);
 }
 
