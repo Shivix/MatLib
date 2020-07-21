@@ -15,11 +15,11 @@ namespace MatLib{
         
         [[nodiscard]] constexpr bool empty() const noexcept {
             return size() == 0;
-        } 
-        void fill(const T& value){
+        }
+        constexpr void fill(const T& value){
             std::fill(begin(), end(), value);
         }
-        matrix<T, rows, cols * 2> getAugment(const matrix& other) const { // returns a matrix where the other matrix is "attached" to the original
+        constexpr matrix<T, rows, cols * 2> getAugment(const matrix& other) const { // returns a matrix where the other matrix is "attached" to the original
             matrix<T, rows, cols * 2> resultMatrix = {};
             
             for(std::size_t i = 0; i < rows; ++i){
@@ -34,7 +34,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        T getDeterminant() const {
+        constexpr T getDeterminant() const {
             static_assert(rows == cols, "Must be a square matrix");
             T determinant = 1;
             if(rows == 1){
@@ -56,7 +56,7 @@ namespace MatLib{
             }
             return determinant;
         }
-        matrix getIdentity() const {
+        constexpr matrix getIdentity() const {
             matrix identityMatrix = {};
 
             for(std::size_t i = 0; i < rows; ++i){
@@ -71,7 +71,7 @@ namespace MatLib{
             }
             return identityMatrix;
         }
-        matrix getInverse() const {
+        constexpr matrix getInverse() const {
             
             matrix<T, rows, cols * 2> augIdentMatrix = getAugment(getIdentity()); // gets the identity matrix and then augments it onto the original matrix
             
@@ -139,9 +139,9 @@ namespace MatLib{
             for(auto&& i: resultMatrix){
                 i = std::round(i * 1000) / 1000;
             }
-            return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign
-        }
-        matrix getTranspose() const {
+            return std::make_tuple(resultMatrix, isInverted); // returns a tuple including the bool that keeps track of the sign 
+        }                                                     // the tuple currently prevents the function from happening at compile time.
+        constexpr matrix getTranspose() const {
             matrix<T, rows, cols> transposedMatrix = {}; // rows and cols are in opposite order for transposed matrix
             
             for(std::size_t i = 0; i < rows; ++i){
@@ -151,19 +151,19 @@ namespace MatLib{
             }
             return transposedMatrix;
         }
-        bool isOrthogonal() const {
+        constexpr bool isOrthogonal() const {
             return getTranspose() == getInverse();
         }
         [[nodiscard]] constexpr std::size_t size() const noexcept{
             return rows * cols;
         }
-        void swap(matrix& other) noexcept {
+        constexpr void swap(matrix& other) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
                 m_data[i].swap(other[i]);
             }
         }
         // Arithmetic operators
-        matrix operator + (const matrix& other) const noexcept { 
+        constexpr matrix operator + (const matrix& other) const noexcept { 
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
@@ -172,7 +172,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator + (const T& scalar) const noexcept {
+        constexpr matrix operator + (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
@@ -181,7 +181,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator - (const matrix& other) const noexcept {
+        constexpr matrix operator - (const matrix& other) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ // m_data[x] will all have same .size()
@@ -190,7 +190,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator - (const T& scalar) const noexcept {
+        constexpr matrix operator - (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){ 
@@ -200,7 +200,7 @@ namespace MatLib{
             return resultMatrix;
         }
         template<std::size_t otherRows, std::size_t otherCols>
-        matrix operator * (const matrix<T, otherCols, otherRows>& other) const noexcept { 
+        constexpr matrix operator * (const matrix<T, otherCols, otherRows>& other) const noexcept { 
             matrix<T, cols, otherRows> resultMatrix = {};
             for(std::size_t i = 0; i < otherRows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
@@ -211,7 +211,7 @@ namespace MatLib{
             }
             return resultMatrix;
         }
-        matrix operator * (const T& scalar) const noexcept {
+        constexpr matrix operator * (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
@@ -221,11 +221,11 @@ namespace MatLib{
             return resultMatrix;
         }
         template<std::size_t otherRows, std::size_t otherCols>
-        matrix operator / (matrix<T, otherCols, otherRows>& other) const noexcept {
+        constexpr matrix operator / (matrix<T, otherCols, otherRows>& other) const noexcept {
             matrix invertedMatrix = other.getInverse();
             return (*this * invertedMatrix);
         }
-        matrix operator / (const T& scalar) const noexcept {
+        constexpr matrix operator / (const T& scalar) const noexcept {
             matrix<T, cols, rows> resultMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
@@ -234,34 +234,40 @@ namespace MatLib{
             }
             return resultMatrix;
         }
+        constexpr friend matrix operator - (matrix& matrix) noexcept {
+            for(auto&& i: matrix){
+                i = -i;
+            }
+            return matrix;
+        }
         // Arithmetic assignment operators
-        void operator += (const matrix& other) noexcept {
+        constexpr void operator += (const matrix& other) noexcept {
             *this = *this + other;
         }
-        void operator += (const T& scalar) noexcept {
+        constexpr void operator += (const T& scalar) noexcept {
             *this = *this + scalar;
         }
-        void operator -= (const matrix& other) noexcept {
+        constexpr void operator -= (const matrix& other) noexcept {
             *this = *this - other;
         }
-        void operator -= (const T& scalar) noexcept {
+        constexpr void operator -= (const T& scalar) noexcept {
             *this = *this - scalar;
         }
         template<std::size_t otherRows, std::size_t otherCols>
-        void operator *= (const matrix<T, otherCols, otherRows>& other) noexcept {
+        constexpr void operator *= (const matrix<T, otherCols, otherRows>& other) noexcept {
             *this = *this * other;
         }
-        void operator *= (const T& scalar) noexcept {
+        constexpr void operator *= (const T& scalar) noexcept {
             *this = *this * scalar;
         }
         template<std::size_t otherRows, std::size_t otherCols>
-        void operator /= (const matrix<T, otherCols, otherRows>& other) noexcept {
+        constexpr void operator /= (const matrix<T, otherCols, otherRows>& other) noexcept {
             *this = *this / other;
         }
-        void operator /= (const T& scalar) noexcept {
+        constexpr void operator /= (const T& scalar) noexcept {
             *this = *this / scalar;
         }
-        // access
+        // element access
         constexpr std::array<T, cols>& operator [] (const std::size_t& index) noexcept {
             return m_data[index];
         }
@@ -299,7 +305,7 @@ namespace MatLib{
             return *begin();
         }
         // comparison operators
-        friend bool operator == (const matrix& matrix1, const matrix& matrix2) noexcept {
+        constexpr friend bool operator == (const matrix& matrix1, const matrix& matrix2) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
                 if(matrix1[i] != matrix2[i]){ // uses the std::array operator != overload and runs it for each column
                     return false;
@@ -310,7 +316,7 @@ namespace MatLib{
             }
             return true;
         }
-        friend bool operator != (const matrix& matrix1, const matrix& matrix2) noexcept {
+        constexpr friend bool operator != (const matrix& matrix1, const matrix& matrix2) noexcept {
             for(std::size_t i = 0; i < rows; ++i){
                 if(matrix1[i] == matrix2[i]){
                     return false;
