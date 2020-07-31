@@ -94,13 +94,13 @@ namespace MatLib{
                 }
             }
             // add the inverted half of the augmented matrix to it's own matrix
-            matrix inversedMatrix = {};
+            matrix invertedMatrix = {};
             for(std::size_t i = 0; i < rows; ++i){
                 for(std::size_t j = 0; j < cols; ++j){
-                    inversedMatrix[i][j] = augIdentMatrix[i][j + cols];
+                    invertedMatrix[i][j] = augIdentMatrix[i][j + cols];
                 }
             }
-            return inversedMatrix;
+            return invertedMatrix;
         }
         std::tuple<matrix, bool> getRowEchelon() const { // returns the row echelon form matrix so that the original is kept
             matrix resultMatrix = *this;
