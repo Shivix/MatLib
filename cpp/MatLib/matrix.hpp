@@ -338,8 +338,8 @@ namespace MatLib{
         constexpr std::reverse_iterator<T*> rbegin() noexcept {
             return std::reverse_iterator<T*>(end());
         }
-        constexpr const std::reverse_iterator<T*> crbegin() const noexcept {
-            return std::reverse_iterator<T*>(end());
+        constexpr const std::reverse_iterator<const T*> crbegin() const noexcept {
+            return std::reverse_iterator<const T*>(end());
         }
         constexpr T* end() noexcept {
             return &m_data[rows - 1][cols];
@@ -353,8 +353,8 @@ namespace MatLib{
         constexpr std::reverse_iterator<T*> rend() noexcept {
             return std::reverse_iterator<T*>(begin());
         }
-        constexpr const std::reverse_iterator<T*> crend() const noexcept {
-            return std::reverse_iterator<T*>(begin());
+        constexpr const std::reverse_iterator<const T*> crend() const noexcept {
+            return std::reverse_iterator<const T*>(begin());
         }
     };
 }
