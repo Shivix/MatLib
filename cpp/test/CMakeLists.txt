@@ -15,5 +15,3 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(MatLib ${INCLUDES} ${TESTSRC})
 target_link_libraries(MatLib -lboost_unit_test_framework)
-
-#add_library(MatLib INTERFACE ${INCLUDES})
