@@ -325,6 +325,7 @@ BOOST_AUTO_TEST_CASE(find_test)  // NOLINT
                      {5, 2, 5}
              }}};
     BOOST_TEST((*std::find(matrix3x3.cbegin(), matrix3x3.cend(), 0)) == 0);
+    BOOST_TEST((*std::find(matrix3x3.crbegin(), matrix3x3.crend(), 0)) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(empty_test)  // NOLINT
