@@ -4,7 +4,7 @@ project(MatLib)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SRC
-        ../MatLib/pyMatrix.hpp)
+        ../MatLib/pyMatrix.cpp)
 set(TESTSRC
         unitTest.py)
 

@@ -4,8 +4,7 @@ project(MatLib)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SRC
-        MatLib/pyMatrix.hpp
-        MatLib/a.cpp)
+        MatLib/pyMatrix.cpp)
 
 add_subdirectory(pybind11)
 pybind11_add_module(MatLib ${SRC})
