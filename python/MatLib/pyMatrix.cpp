@@ -11,7 +11,14 @@ using matrix3x3 = MatLib::matrix<double, 3, 3>;
 PYBIND11_MODULE(matrix, matrix){
     py::class_<matrix3x3>(matrix, "matrix")
         .def(py::init<>())
-        .def("empty", &matrix3x3::empty, "Returns true if the matrix has a size of 0");
+        .def("empty", &matrix3x3::empty, "Returns true if the matrix has a size of 0")
+        .def("fill", &matrix3x3::fill, "Fills the matrix with a single value")
+        .def("getAugment", &matrix3x3::getAugment, "Calculates and returns augmented matrix")
+        .def("getDeterminant", &matrix3x3::getDeterminant, "Calculates and returns augmented matrix")
+        .def("getIdentity", &matrix3x3::getIdentity, "Calculates and returns augmented matrix")
+        .def("getInverse", &matrix3x3::getInverse, "Calculates and returns augmented matrix")
+        .def("getRowEchelon", &matrix3x3::getRowEchelon, "Calculates and returns augmented matrix")
+        .def("getTranspose", &matrix3x3::getTranspose, "Calculates and returns augmented matrix");
 }
 
 #endif //MATLIB_PYMATRIX_CPP
