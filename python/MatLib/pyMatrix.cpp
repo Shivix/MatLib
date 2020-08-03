@@ -2,6 +2,7 @@
 #define MATLIB_PYMATRIX_CPP
 
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
 #include "../../cpp/MatLib/matrix.hpp"
 
 namespace py = pybind11;
@@ -18,7 +19,15 @@ PYBIND11_MODULE(matrix, matrix){
         .def("getIdentity", &matrix3x3::getIdentity, "Calculates and returns augmented matrix")
         .def("getInverse", &matrix3x3::getInverse, "Calculates and returns augmented matrix")
         .def("getRowEchelon", &matrix3x3::getRowEchelon, "Calculates and returns augmented matrix")
-        .def("getTranspose", &matrix3x3::getTranspose, "Calculates and returns augmented matrix");
+        .def("getTranspose", &matrix3x3::getTranspose, "Calculates and returns augmented matrix")
+        .def("isOrthogonal", &matrix3x3::isOrthogonal, "Calculates and returns augmented matrix")
+        .def("size", &matrix3x3::size, "Calculates and returns augmented matrix")
+        .def("swap", &matrix3x3::swap, "Calculates and returns augmented matrix")
+        .def(py::self + py::self, "Calculates and returns augmented matrix")
+        .def(py::self + double(), "Calculates and returns augmented matrix")
+        .def(py::self * py::self, "Calculates and returns augmented matrix")
+        .def(py::self * double(), "Calculates and returns augmented matrix")
+        .def(-py::self, "Calculates and returns augmented matrix");
 }
 
 #endif //MATLIB_PYMATRIX_CPP
