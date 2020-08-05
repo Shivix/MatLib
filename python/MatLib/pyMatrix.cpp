@@ -27,7 +27,21 @@ PYBIND11_MODULE(matrix, matrix){
         .def(py::self + double(), "Calculates and returns augmented matrix")
         .def(py::self * py::self, "Calculates and returns augmented matrix")
         .def(py::self * double(), "Calculates and returns augmented matrix")
+        .def(py::self / double(), "Calculates and returns augmented matrix")
+        .def(py::self / py::self, "Calculates and returns augmented matrix")
+        .def(py::self - double(), "Calculates and returns augmented matrix")
+        .def(py::self - py::self, "Calculates and returns augmented matrix")
+        .def(py::self += py::self, "Calculates and returns augmented matrix")
+        .def(py::self += double(), "Calculates and returns augmented matrix")
+        .def(py::self * py::self, "Calculates and returns augmented matrix")
+        .def(py::self * double(), "Calculates and returns augmented matrix")
+        .def(py::self /= py::self, "Calculates and returns augmented matrix")
+        .def(py::self /= double(), "Calculates and returns augmented matrix")
+        .def(py::self -= py::self, "Calculates and returns augmented matrix")
+        .def(py::self -= double(), "Calculates and returns augmented matrix")
         .def(-py::self, "Calculates and returns augmented matrix");
+        //.def("data", &matrix3x3::data, "Calculates and returns augmented matrix")
+        //.def("at", &matrix3x3::at, "Calculates and returns augmented matrix")
 }
 
 #endif //MATLIB_PYMATRIX_CPP
