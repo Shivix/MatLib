@@ -10,7 +10,7 @@ set(TESTSRC
 
 find_package(Boost REQUIRED COMPONENTS system)
 
-add_compile_options(-Wall -Wextra -Wpedantic -Werror -fpermissive)
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(MatLib ${INCLUDES} ${TESTSRC})
