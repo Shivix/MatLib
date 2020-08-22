@@ -9,6 +9,11 @@ namespace MatLib{
     template<typename T, std::size_t rows, std::size_t cols>
     class matrix{
     public:
+        using iterator = T*;
+        using const_iterator = const iterator;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        
         // No explicit constructor/ destructor etc. for aggregate all members must also be public
         
         std::array<std::array<T, cols>, rows> m_data{}; // stores the matrix data
@@ -326,35 +331,35 @@ namespace MatLib{
             return true;
         }
         // Iterators
-        constexpr T* begin() noexcept {
+        constexpr iterator begin() noexcept {
             return &m_data[0][0];
         }
-        constexpr const T* begin() const noexcept {
+        constexpr const_iterator begin() const noexcept {
             return &m_data[0][0];
         }
-        constexpr const T* cbegin() const noexcept {
-            return static_cast<const T*>(&m_data[0][0]);
+        constexpr const_iterator cbegin() const noexcept {
+            return static_cast<const_iterator>(&m_data[0][0]);
         }
-        constexpr std::reverse_iterator<T*> rbegin() noexcept {
-            return std::reverse_iterator<T*>(end());
+        constexpr reverse_iterator rbegin() noexcept {
+            return reverse_iterator(end());
         }
-        constexpr std::reverse_iterator<const T*> crbegin() const noexcept {
-            return std::reverse_iterator<const T*>(end());
+        constexpr const_reverse_iterator crbegin() const noexcept {
+            return const_reverse_iterator(end());
         }
-        constexpr T* end() noexcept {
+        constexpr iterator end() noexcept {
             return &m_data[rows - 1][cols];
         }
-        constexpr const T* end() const noexcept {
+        constexpr const_iterator end() const noexcept {
             return &m_data[rows - 1][cols];
         }
-        constexpr const T* cend() const noexcept {
-            return static_cast<const T*>(&m_data[rows - 1][cols]);
+        constexpr const_iterator cend() const noexcept {
+            return static_cast<const_iterator>(&m_data[rows - 1][cols]);
         }
-        constexpr std::reverse_iterator<T*> rend() noexcept {
-            return std::reverse_iterator<T*>(begin());
+        constexpr reverse_iterator rend() noexcept {
+            return reverse_iterator (begin());
         }
-        constexpr std::reverse_iterator<const T*> crend() const noexcept {
-            return std::reverse_iterator<const T*>(begin());
+        constexpr const_reverse_iterator crend() const noexcept {
+            return const_reverse_iterator(begin());
         }
     };
 }
