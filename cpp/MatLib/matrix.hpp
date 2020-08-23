@@ -334,31 +334,31 @@ namespace MatLib{
         constexpr iterator begin() noexcept {
             return &m_data[0][0];
         }
-        constexpr const_iterator begin() const noexcept {
-            return &m_data[0][0];
+        constexpr auto begin() const noexcept { // allows .begin to be used with a const matrix without ambiguity
+            return const_iterator(&m_data[0][0]);
         }
-        constexpr const_iterator cbegin() const noexcept {
-            return static_cast<const_iterator>(&m_data[0][0]);
+        constexpr auto cbegin() const noexcept {
+            return const_iterator(&m_data[0][0]);
         }
-        constexpr reverse_iterator rbegin() noexcept {
+        constexpr auto rbegin() noexcept {
             return reverse_iterator(end());
         }
-        constexpr const_reverse_iterator crbegin() const noexcept {
+        constexpr auto crbegin() const noexcept {
             return const_reverse_iterator(end());
         }
         constexpr iterator end() noexcept {
             return &m_data[rows - 1][cols];
         }
-        constexpr const_iterator end() const noexcept {
-            return &m_data[rows - 1][cols];
+        constexpr auto end() const noexcept { // allows .end to be used with a const matrix without ambiguity
+            return const_iterator(&m_data[rows - 1][cols]);
         }
-        constexpr const_iterator cend() const noexcept {
-            return static_cast<const_iterator>(&m_data[rows - 1][cols]);
+        constexpr auto cend() const noexcept {
+            return const_iterator(&m_data[rows - 1][cols]);
         }
-        constexpr reverse_iterator rend() noexcept {
-            return reverse_iterator (begin());
+        constexpr auto rend() noexcept {
+            return reverse_iterator(begin());
         }
-        constexpr const_reverse_iterator crend() const noexcept {
+        constexpr auto crend() const noexcept {
             return const_reverse_iterator(begin());
         }
     };
