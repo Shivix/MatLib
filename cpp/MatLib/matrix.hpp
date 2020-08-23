@@ -10,9 +10,11 @@ namespace MatLib{
     class matrix{
     public:
         using iterator = T*;
-        using const_iterator = const iterator;
-        using reverse_iterator = std::reverse_iterator<iterator>;
-        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        using const_iterator = const T*;
+        using reverse_iterator = std::reverse_iterator<T*>;
+        using const_reverse_iterator = const std::reverse_iterator<const T*>;
+        using reference = T&;
+        using const_reference = const T&;
         
         // No explicit constructor/ destructor etc. for aggregate all members must also be public
         
@@ -277,34 +279,34 @@ namespace MatLib{
         constexpr const std::array<T, cols>& operator [] (const std::size_t& index) const noexcept {
             return m_data[index];
         }
-        [[nodiscard]] constexpr T& at(std::size_t rowIndex, std::size_t colIndex){
+        [[nodiscard]] constexpr reference at(std::size_t rowIndex, std::size_t colIndex){
             if(rowIndex >= rows || colIndex >= cols){
                 throw std::out_of_range("Element out of range");
             }
             return m_data[rowIndex][colIndex];
         }
-        [[nodiscard]] constexpr const T& at(std::size_t rowIndex, std::size_t colIndex) const {
+        [[nodiscard]] constexpr const_reference at(std::size_t rowIndex, std::size_t colIndex) const {
             if(rowIndex >= rows || colIndex >= cols){
                 throw std::out_of_range("Element out of range");
             }
             return m_data[rowIndex][colIndex];
         }
-        constexpr T* data() noexcept {
+        constexpr iterator data() noexcept {
             return &m_data[0][0];
         }
-        constexpr const T* data() const noexcept { // if the data is const this function will be called instead
-            return &m_data[0][0];
+        constexpr const_iterator data() const noexcept { // if the data is const this function will be called instead
+            return const_iterator(&m_data[0][0]);
         }
-        constexpr T& back() noexcept {
+        constexpr reference back() noexcept {
             return *(end() - 1);
         }
-        constexpr const T& back() const noexcept {
+        constexpr const_reference back() const noexcept {
             return *(end() - 1);
         }
-        constexpr T& front() noexcept {
+        constexpr reference front() noexcept {
             return *begin();
         }
-        constexpr const T& front() const noexcept {
+        constexpr const_reference front() const noexcept {
             return *begin();
         }
         // comparison operators
@@ -349,7 +351,7 @@ namespace MatLib{
         constexpr iterator end() noexcept {
             return &m_data[rows - 1][cols];
         }
-        constexpr auto end() const noexcept { // allows .end to be used with a const matrix without ambiguity
+        constexpr auto end() const noexcept {
             return const_iterator(&m_data[rows - 1][cols]);
         }
         constexpr auto cend() const noexcept {

@@ -322,7 +322,7 @@ BOOST_AUTO_TEST_CASE(find_test)  // NOLINT
     MatLib::matrix<int, 3, 3> matrix3x3 = {
             {{{3, 7, 0},
                      {5, 1, 2},
-                     {5, 2, 5}
+                     {0, 2, 5}
              }}};
     BOOST_TEST((*std::find(matrix3x3.cbegin(), matrix3x3.cend(), 0)) == 0);
     BOOST_TEST((*std::find(matrix3x3.crbegin(), matrix3x3.crend(), 0)) == 0);
