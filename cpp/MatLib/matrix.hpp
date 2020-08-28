@@ -349,13 +349,13 @@ namespace MatLib{
             return const_reverse_iterator(end());
         }
         constexpr iterator end() noexcept {
-            return &m_data[rows - 1][cols];
+            return &m_data[rows - 1][cols - 1] + 1;
         }
         constexpr auto end() const noexcept {
-            return const_iterator(&m_data[rows - 1][cols]);
+            return const_iterator(&m_data[rows - 1][cols - 1] + 1);
         }
         constexpr auto cend() const noexcept {
-            return const_iterator(&m_data[rows - 1][cols]);
+            return const_iterator(&m_data[rows - 1][cols - 1] + 1);
         }
         constexpr auto rend() noexcept {
             return reverse_iterator(begin());
