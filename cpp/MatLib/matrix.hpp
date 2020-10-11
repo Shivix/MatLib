@@ -321,16 +321,8 @@ namespace MatLib{
             }
             return true;
         }
-        constexpr friend bool operator != (const matrix& matrix1, const matrix& matrix2) noexcept {
-            for(std::size_t i = 0; i < rows; ++i){
-                if(matrix1[i] == matrix2[i]){
-                    return false;
-                }
-                else{
-                    continue;
-                }
-            }
-            return true;
+        constexpr bool operator != (const matrix& other) noexcept {
+            return !(this == other);
         }
         // Iterators
         constexpr iterator begin() noexcept {
