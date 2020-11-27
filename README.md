@@ -1,5 +1,7 @@
 # MatLib
 
+Note: This library has been merged with [ShivLib](https://github.com/Shivix/Shivix-Standard-Library). Future updated will be pushed there.
+
 A lightweight library for efficient 2d matrix math.
 
 Made with usability in mind:
